@@ -15,7 +15,7 @@
   --vermelho:#B4432F; --vermelho-bg:#FAE7E3;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;padding-bottom:76px}
 .mono{font-family:'JetBrains Mono',monospace}
 h1,h2,h3,h4{font-family:'Sora',sans-serif}
 .wrap{max-width:900px;margin:0 auto;padding:0 22px}
@@ -30,11 +30,13 @@ header::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;hei
 header h1{font-size:24px;font-weight:800;line-height:1.28;max-width:640px;position:relative;z-index:2}
 header p.sub{margin-top:10px;max-width:600px;color:#B9CDE0;font-size:13.5px;position:relative;z-index:2}
 
-.tabs-nav{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(15,42,74,.06)}
-.tabs-nav .wrap{display:flex;gap:2px;flex-wrap:wrap;row-gap:0}
-.tab-btn{padding:13px 15px;font-size:12.5px;font-weight:600;color:var(--gray);background:none;border:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;font-family:'Inter',sans-serif;transition:.15s}
-.tab-btn:hover{color:var(--navy);border-bottom-color:var(--terra)}
-.tab-btn.on{color:var(--navy);border-bottom-color:var(--terra);background:#F2F5F8}
+.tabs-nav{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#fff;border-top:1px solid var(--line);box-shadow:0 -2px 10px rgba(15,42,74,.08);padding-bottom:env(safe-area-inset-bottom)}
+.tabs-nav .wrap{display:flex;max-width:900px}
+.tab-btn{flex:1;padding:9px 6px 8px;font-size:11px;font-weight:600;color:var(--gray);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab-btn .tab-icon{font-size:21px;line-height:1}
+.tab-btn:active{background:#F2F5F8}
+.tab-btn.on{color:var(--terra-2)}
+.tab-btn.on .tab-icon{transform:scale(1.08)}
 .tab-panel{display:none}
 .tab-panel.on{display:block}
 .tab-content{padding:28px 0 50px}
@@ -69,8 +71,8 @@ header p.sub{margin-top:10px;max-width:600px;color:#B9CDE0;font-size:13.5px;posi
 .f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .f-field{margin-bottom:12px}
 .f-field label{display:block;font-size:11.5px;color:var(--navy);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
-.f-field input[type=text],.f-field input[type=number],.f-field input[type=date],.f-field select,.f-field textarea{
-  width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter',sans-serif;background:#fff}
+.f-field input[type=text],.f-field input[type=number],.f-field input[type=date],.f-field input[type=time],.f-field select,.f-field textarea{
+  width:100%;padding:10px 11px;border:1.5px solid var(--line);border-radius:8px;font-size:16px;font-family:'Inter',sans-serif;background:#fff}
 .f-field input:focus,.f-field select:focus,.f-field textarea:focus{outline:none;border-color:var(--navy-3)}
 .f-field textarea{resize:vertical;min-height:60px}
 .f-radio-group{display:flex;gap:16px;margin-top:4px}
@@ -113,9 +115,9 @@ footer b{color:#fff}
 </header>
 
 <nav class="tabs-nav"><div class="wrap">
-  <button class="tab-btn on" data-tab="roteiro">Roteiro do Vendedor</button>
-  <button class="tab-btn" data-tab="checklist">Checklist da Visita</button>
-  <button class="tab-btn" data-tab="formulario">Formulário de Coleta</button>
+  <button class="tab-btn on" data-tab="roteiro"><span class="tab-icon">🗣️</span>Roteiro</button>
+  <button class="tab-btn" data-tab="checklist"><span class="tab-icon">✅</span>Checklist</button>
+  <button class="tab-btn" data-tab="formulario"><span class="tab-icon">📝</span>Formulário</button>
 </div></nav>
 
 <div id="aviso-storage" style="display:none;background:#FAE7E3;border-bottom:1px solid #E8B7A8;color:#7A2E1D;font-size:12.5px;text-align:center;padding:9px 16px">
@@ -388,8 +390,8 @@ renderChecklist();
    no arquivo separado que a Claude te entregou junto com este (setup-supabase.md).
    Enquanto estiver vazio, o app funciona 100% no modo local (so salva no
    celular, sem tentar sincronizar - nada quebra). */
-const SUPABASE_URL = '';        // ex: 'https://xxxxxxxxxxxx.supabase.co'
-const SUPABASE_ANON_KEY = '';   // chave publica "anon" do projeto (nao e secreta, e feita pra ficar no front-end)
+const SUPABASE_URL = 'https://bcsjmvtsiwqqlxeksjsz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjc2ptdnRzaXdxcWx4ZWtzanN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNzc4NTYsImV4cCI6MjA5OTc1Mzg1Nn0.e4s8_piJB7GczkUrbFkW6OYCIc_8yjnKhiEJhSC3rxA';
 
 async function enviarParaSupabase(visita){
   if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return {ok:false, motivo:'nao_configurado'};
