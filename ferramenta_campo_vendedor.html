@@ -188,13 +188,13 @@ footer b{color:#fff}
   <form id="form-coleta">
     <div class="card">
       <div class="form-section">
-        <h4>O essencial (leva 1 minuto)</h4>
+        <h4>Dados da visita e do produtor</h4>
         <div class="f-grid">
           <div class="f-field"><label>Seu nome</label><input type="text" id="f-coletor" required></div>
           <div class="f-field"><label>Município</label><input type="text" id="f-municipio" required></div>
           <div class="f-field"><label>Nome do produtor</label><input type="text" id="f-nome" required></div>
-          <div class="f-field"><label>Telefone/WhatsApp</label><input type="text" id="f-telefone"></div>
-          <div class="f-field"><label>Nº de cabeças (aprox.)</label><input type="number" id="f-cabecas"></div>
+          <div class="f-field"><label>Telefone/WhatsApp</label><input type="text" id="f-telefone" required></div>
+          <div class="f-field"><label>Nº de cabeças (aprox.)</label><input type="number" id="f-cabecas" required></div>
           <div class="f-field">
             <label>Tipo</label>
             <select id="f-tipo">
@@ -222,7 +222,7 @@ footer b{color:#fff}
         <div class="f-field">
           <label>Coordenadas GPS</label>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <input type="text" id="f-coords" placeholder="Toque no botão pra capturar" readonly style="flex:1;min-width:180px">
+            <input type="text" id="f-coords" placeholder="Toque no botão pra capturar" readonly required style="flex:1;min-width:180px">
             <button type="button" class="btn-loc" id="btn-capturar-gps">📍 Capturar localização</button>
           </div>
           <div id="gps-status" style="font-size:11.5px;color:var(--gray);margin-top:6px"></div>
@@ -231,32 +231,32 @@ footer b{color:#fff}
 
       <div id="detalhes-extras">
         <div class="form-section">
-          <h4>Detalhes extras (preencha se tiver tempo)</h4>
+          <h4>Continue preenchendo — todos os campos abaixo também são obrigatórios</h4>
           <div class="f-grid">
-            <div class="f-field"><label>Data da visita</label><input type="date" id="f-data"></div>
-            <div class="f-field"><label>Horário da visita</label><input type="time" id="f-horario"></div>
-            <div class="f-field"><label>Indicado por</label><input type="text" id="f-indicado"></div>
-            <div class="f-field"><label>Nome da propriedade</label><input type="text" id="f-propriedade"></div>
+            <div class="f-field"><label>Data da visita</label><input type="date" id="f-data" required></div>
+            <div class="f-field"><label>Horário da visita</label><input type="time" id="f-horario" required></div>
+            <div class="f-field"><label>Indicado por</label><input type="text" id="f-indicado" required></div>
+            <div class="f-field"><label>Nome da propriedade</label><input type="text" id="f-propriedade" required></div>
             <div class="f-field"><label>CPF ou CNPJ (se tiver)</label><input type="text" id="f-doc"></div>
-            <div class="f-field"><label>Área total (hectares)</label><input type="number" id="f-area" step="0.1"></div>
+            <div class="f-field"><label>Área total (hectares)</label><input type="number" id="f-area" step="0.1" required></div>
             <div class="f-field">
               <label>Sistema (se corte/misto)</label>
-              <select id="f-sistema">
-                <option value="">—</option>
+              <select id="f-sistema" required>
+                <option value="">Selecione...</option>
                 <option value="Extensivo">Extensivo</option>
                 <option value="Semi-confinamento">Semi-confinamento</option>
                 <option value="Confinamento">Confinamento</option>
               </select>
             </div>
-            <div class="f-field"><label>Vacas em lactação</label><input type="number" id="f-vacas-lac"></div>
-            <div class="f-field"><label>Produção (litros/dia)</label><input type="number" id="f-litros-dia"></div>
-            <div class="f-field"><label>Marca/fornecedor atual</label><input type="text" id="f-marca"></div>
-            <div class="f-field"><label>Onde compra</label><input type="text" id="f-onde-compra"></div>
-            <div class="f-field"><label>Volume (ton/mês)</label><input type="number" id="f-volume" step="0.1"></div>
+            <div class="f-field"><label>Vacas em lactação</label><input type="number" id="f-vacas-lac" required></div>
+            <div class="f-field"><label>Produção (litros/dia)</label><input type="number" id="f-litros-dia" required></div>
+            <div class="f-field"><label>Marca/fornecedor atual</label><input type="text" id="f-marca" required></div>
+            <div class="f-field"><label>Onde compra</label><input type="text" id="f-onde-compra" required></div>
+            <div class="f-field"><label>Volume (ton/mês)</label><input type="number" id="f-volume" step="0.1" required></div>
             <div class="f-field">
               <label>Forma de pagamento</label>
-              <select id="f-pagamento">
-                <option value="">—</option>
+              <select id="f-pagamento" required>
+                <option value="">Selecione...</option>
                 <option value="À vista">À vista</option>
                 <option value="Financiado">Financiado</option>
                 <option value="Descontado no leite">Descontado no leite</option>
@@ -280,7 +280,7 @@ footer b{color:#fff}
               <label><input type="radio" name="f-expandir" value="Não sabe"> Não sabe</label>
             </div>
           </div>
-          <div class="f-field"><label>Observações</label><textarea id="f-obs"></textarea></div>
+          <div class="f-field"><label>Observações</label><textarea id="f-obs" required placeholder="Descreva algo sobre a visita, mesmo que breve"></textarea></div>
         </div>
       </div>
 
