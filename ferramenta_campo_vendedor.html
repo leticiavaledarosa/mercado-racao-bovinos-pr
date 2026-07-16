@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferramenta de Campo — Prospecção de Produtores | Leticia Vale da Rosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F2A4A; --navy-2:#1C3D63; --navy-3:#2E5578;
+  --terra:#C1592C; --terra-2:#A64420; --terra-light:#F3E1D6;
+  --bg:#F5F7FA; --card:#FFFFFF; --ink:#16232F; --gray:#5C6B78;
+  --line:#E2E6EA; --verde-ok:#2E7D5B; --verde-bg:#E3F3EA;
+  --vermelho:#B4432F; --vermelho-bg:#FAE7E3;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+.mono{font-family:'JetBrains Mono',monospace}
+h1,h2,h3,h4{font-family:'Sora',sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+
+.autoria-bar{background:var(--navy);color:#CFE0EE;font-size:12px;padding:7px 0;text-align:center;letter-spacing:.02em}
+.autoria-bar b{color:#fff;font-weight:700}
+.autoria-bar .sep{margin:0 8px;opacity:.5}
+
+header{background:linear-gradient(135deg,#0A1E36 0%,#0F2A4A 55%,#1C3D63 100%);color:#fff;padding:32px 0 26px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;border:44px solid rgba(193,89,44,.16)}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#E8A87C;margin-bottom:10px}
+header h1{font-size:24px;font-weight:800;line-height:1.28;max-width:640px;position:relative;z-index:2}
+header p.sub{margin-top:10px;max-width:600px;color:#B9CDE0;font-size:13.5px;position:relative;z-index:2}
+
+.tabs-nav{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(15,42,74,.06)}
+.tabs-nav .wrap{display:flex;gap:2px;flex-wrap:wrap;row-gap:0}
+.tab-btn{padding:13px 15px;font-size:12.5px;font-weight:600;color:var(--gray);background:none;border:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;font-family:'Inter',sans-serif;transition:.15s}
+.tab-btn:hover{color:var(--navy);border-bottom-color:var(--terra)}
+.tab-btn.on{color:var(--navy);border-bottom-color:var(--terra);background:#F2F5F8}
+.tab-panel{display:none}
+.tab-panel.on{display:block}
+.tab-content{padding:28px 0 50px}
+
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;font-weight:600}
+.tab-content h2{font-size:20px;color:var(--navy);margin-bottom:8px}
+.lead{color:var(--gray);max-width:840px;margin-bottom:20px;font-size:14px;text-align:left}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 1px 3px rgba(15,42,74,.05)}
+.card h3{font-size:15px;color:var(--navy);margin-bottom:10px}
+
+.note{background:#FDF1E9;border:1px solid #EBC6A8;border-radius:10px;padding:12px 15px;font-size:12.5px;color:#6B3A16;margin:12px 0}
+.note b{color:#4A2410}
+.method{background:#EEF3F7;border:1px solid #D3E0EA;border-radius:10px;padding:12px 15px;font-size:12.5px;color:#1E3A52;margin:12px 0}
+
+/* Roteiro (script de conversa) */
+.fala{background:#F7F9FB;border-left:3px solid var(--navy-3);border-radius:0 8px 8px 0;padding:11px 15px;margin:10px 0;font-size:13px;font-style:italic;color:var(--navy)}
+.playbook-step{border-left:3px solid var(--terra);padding:4px 0 4px 18px;margin-bottom:18px;position:relative}
+.playbook-step::before{content:"";position:absolute;left:-8px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--terra);border:3px solid #fff}
+.playbook-step h4{font-size:14px;color:var(--navy);margin-bottom:5px}
+
+/* Checklist */
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.check-item:last-child{border-bottom:none}
+.check-item input[type=checkbox]{width:18px;height:18px;margin-top:1px;accent-color:var(--terra);cursor:pointer;flex-shrink:0}
+.check-item label{font-size:13.5px;cursor:pointer}
+.check-item.done label{color:var(--gray);text-decoration:line-through}
+
+/* Formulario */
+.form-section{margin-bottom:22px}
+.form-section h4{font-size:13px;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--terra-light)}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f-field{margin-bottom:12px}
+.f-field label{display:block;font-size:11.5px;color:var(--navy);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
+.f-field input[type=text],.f-field input[type=number],.f-field input[type=date],.f-field select,.f-field textarea{
+  width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter',sans-serif;background:#fff}
+.f-field input:focus,.f-field select:focus,.f-field textarea:focus{outline:none;border-color:var(--navy-3)}
+.f-field textarea{resize:vertical;min-height:60px}
+.f-radio-group{display:flex;gap:16px;margin-top:4px}
+.f-radio-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer}
+.f-radio-group input{cursor:pointer;accent-color:var(--terra)}
+.btn{background:var(--navy);color:#fff;border:none;padding:11px 22px;border-radius:9px;font-weight:700;font-size:13.5px;cursor:pointer;font-family:'Sora',sans-serif}
+.btn:hover{background:var(--navy-2)}
+.btn-terra{background:var(--terra)}
+.btn-terra:hover{background:var(--terra-2)}
+.btn-loc{background:#EEF3F7;color:var(--navy);border:1.5px solid #D3E0EA;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-loc:hover{background:#E2ECF3}
+.btn-download{display:inline-flex;align-items:center;gap:6px;background:#EAF4EE;border:1.5px solid #BFE0CB;color:#1B6B41;padding:9px 16px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-download:hover{background:#DCEEE3}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--navy);color:#fff;padding:8px 9px;text-align:center;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em}
+td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+tr:hover td{background:#F2F5F8}
+.tbl-scroll{max-height:400px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700}
+.b-ok{background:var(--verde-bg);color:var(--verde-ok)}
+.b-no{background:var(--vermelho-bg);color:var(--vermelho)}
+
+footer{background:var(--navy);color:#B9CDE0;padding:22px 0;margin-top:0;font-size:11.5px;text-align:center}
+footer b{color:#fff}
+@media(max-width:640px){.f-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="autoria-bar">Ferramenta de campo — Leticia Vale da Rosa<span class="sep">·</span>Prospecção de Produtores sem CNPJ<span class="sep">·</span>Complemento do Estudo de Mercado</div>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Uso interno · Equipe comercial</div>
+    <h1>Roteiro, checklist e formulário de coleta — visita ao produtor</h1>
+    <p class="sub">Ferramenta pra quem está em campo: como abordar, o que não esquecer, e como registrar os dados de produtores que não aparecem em nenhuma base de CNPJ. Funciona offline depois de aberta uma vez.</p>
+  </div>
+</header>
+
+<nav class="tabs-nav"><div class="wrap">
+  <button class="tab-btn on" data-tab="roteiro">Roteiro do Vendedor</button>
+  <button class="tab-btn" data-tab="checklist">Checklist da Visita</button>
+  <button class="tab-btn" data-tab="formulario">Formulário de Coleta</button>
+</div></nav>
+
+<div id="aviso-storage" style="display:none;background:#FAE7E3;border-bottom:1px solid #E8B7A8;color:#7A2E1D;font-size:12.5px;text-align:center;padding:9px 16px">
+  ⚠️ Este navegador não está permitindo salvar dados localmente (comum ao abrir arquivo direto do computador/celular). Suas visitas <b>não serão perdidas durante o uso</b>, mas somem se você fechar a aba — baixe o Excel antes de fechar, pra não perder nada.
+</div>
+
+<!-- ========================= ROTEIRO ========================= -->
+<div class="tab-panel on" id="tab-roteiro"><div class="wrap tab-content">
+  <div class="sec-tag">01 · Roteiro do Vendedor</div>
+  <h2>Como abordar quem você nunca visitou</h2>
+  <p class="lead">A lógica central: não vá direto no produtor — vá primeiro em quem já conhece todos eles. Esse roteiro cobre os 3 tipos de abordagem mais comuns em campo.</p>
+
+  <div class="card">
+    <h3>Abordagem 1 — Na revenda/agropecuária (antes de ir a campo)</h3>
+    <p style="font-size:13px;color:var(--gray)">O primeiro contato nunca é o produtor — é quem já vende pra ele. Objetivo aqui é mapear quem são os maiores produtores da região, não vender nada ainda.</p>
+    <div class="fala">"Bom dia! Eu sou [nome], trabalho com nutrição animal e estou conhecendo melhor a região de [município]. Vocês atendem bastante produtor de gado por aqui — dá pra eu entender um pouco melhor o perfil de quem compra? Quem são os maiores criadores da região?"</div>
+    <div class="note"><b>Cuidado:</b> não parece concorrente pedindo lista de clientes — parece alguém estudando o mercado. Se a revenda hesitar, ofereça algo em troca (uma palestra técnica gratuita, por exemplo).</div>
+  </div>
+
+  <div class="card">
+    <h3>Abordagem 2 — Direto na propriedade (visita não anunciada)</h3>
+    <p style="font-size:13px;color:var(--gray)">Comum quando você já sabe (por indicação ou observação) que ali tem produção relevante.</p>
+    <div class="fala">"Boa tarde, seu(a) [nome se souber]! Meu nome é [nome], trabalho com nutrição animal aqui na região. Vi que o senhor(a) trabalha com gado — será que posso tomar uns 5 minutinhos pra entender melhor como funciona o manejo aqui?"</div>
+    <div class="note"><b>Regra de ouro:</b> pergunte antes de anotar qualquer coisa. "Posso anotar uns dados rapidinho, pra eu já te trazer uma proposta certinha da próxima vez?" — isso também resolve a questão de consentimento (ver campo "autoriza contato" no formulário).</div>
+  </div>
+
+  <div class="card">
+    <h3>Abordagem 3 — Por indicação (o método que mais funciona)</h3>
+    <p style="font-size:13px;color:var(--gray)">Toda visita — de qualquer tipo — termina com uma pergunta. Essa é a técnica de maior retorno em vendas de campo no agro.</p>
+    <div class="fala">"Antes de eu ir, o senhor(a) conhece mais alguém aqui perto que também trabalha com gado? Adoraria poder passar lá também."</div>
+    <div class="method">Cada produtor visitado indica, em média, 2 a 3 outros. É assim que a lista cresce em cadeia, sem precisar "descobrir" ninguém do zero.</div>
+  </div>
+
+  <div class="card">
+    <h3>Perguntas-chave da conversa (na ordem certa)</h3>
+    <div class="playbook-step"><h4>1. Quebrar o gelo</h4><p style="font-size:13px;color:var(--gray)">Fale sobre a propriedade, o clima, algo neutro antes de qualquer pergunta comercial.</p></div>
+    <div class="playbook-step"><h4>2. Entender o rebanho</h4><p style="font-size:13px;color:var(--gray)">"Quantas cabeças o senhor tem hoje? É mais foco em corte, leite, ou os dois?"</p></div>
+    <div class="playbook-step"><h4>3. A pergunta mais importante</h4><p style="font-size:13px;color:var(--gray)">"E hoje, o senhor compra ração pronta ou prefere misturar aqui mesmo?" — essa resposta sozinha já diz se vale a pena investir tempo nesse lead.</p></div>
+    <div class="playbook-step"><h4>4. Fechar com naturalidade</h4><p style="font-size:13px;color:var(--gray)">Não empurre venda na primeira visita. Agradeça, deixe contato, e pergunte quem mais ele conhece (Abordagem 3).</p></div>
+  </div>
+</div></div>
+
+<!-- ========================= CHECKLIST ========================= -->
+<div class="tab-panel" id="tab-checklist"><div class="wrap tab-content">
+  <div class="sec-tag">02 · Checklist da Visita</div>
+  <h2>Antes, durante e depois</h2>
+  <p class="lead">Marque conforme for cumprindo. Fica salvo no seu celular — pode fechar e voltar depois que continua de onde parou.</p>
+
+  <div class="card">
+    <h3>Antes de sair de casa</h3>
+    <div id="check-antes"></div>
+  </div>
+  <div class="card">
+    <h3>Durante a visita</h3>
+    <div id="check-durante"></div>
+  </div>
+  <div class="card">
+    <h3>Depois da visita</h3>
+    <div id="check-depois"></div>
+  </div>
+  <button class="btn" id="btn-reset-checklist" style="background:var(--gray)">Reiniciar checklist (novo dia)</button>
+</div></div>
+
+<!-- ========================= FORMULARIO ========================= -->
+<div class="tab-panel" id="tab-formulario"><div class="wrap tab-content">
+  <div class="sec-tag">03 · Formulário de Coleta</div>
+  <h2>Registrar uma visita</h2>
+  <p class="lead">Preenche na hora, mesmo sem internet. Cada visita fica salva no celular; quando tiver sinal, é só baixar tudo em Excel e mandar pra base principal.</p>
+
+  <form id="form-coleta">
+    <div class="card">
+      <div class="form-section">
+        <h4>O essencial (leva 1 minuto)</h4>
+        <div class="f-grid">
+          <div class="f-field"><label>Seu nome</label><input type="text" id="f-coletor" required></div>
+          <div class="f-field"><label>Município</label><input type="text" id="f-municipio" required></div>
+          <div class="f-field"><label>Nome do produtor</label><input type="text" id="f-nome" required></div>
+          <div class="f-field"><label>Telefone/WhatsApp</label><input type="text" id="f-telefone"></div>
+          <div class="f-field"><label>Nº de cabeças (aprox.)</label><input type="number" id="f-cabecas"></div>
+          <div class="f-field">
+            <label>Tipo</label>
+            <select id="f-tipo">
+              <option value="Corte">Corte</option>
+              <option value="Leite">Leite</option>
+              <option value="Misto">Misto</option>
+            </select>
+          </div>
+        </div>
+        <div class="f-field">
+          <label>Compra ração pronta ou mistura na fazenda?</label>
+          <div class="f-radio-group">
+            <label><input type="radio" name="f-compra" value="Compra pronta" checked> Compra pronta</label>
+            <label><input type="radio" name="f-compra" value="Mistura na fazenda"> Mistura</label>
+            <label><input type="radio" name="f-compra" value="Os dois"> Os dois</label>
+          </div>
+        </div>
+        <div class="f-field">
+          <label>Autoriza contato futuro?</label>
+          <div class="f-radio-group">
+            <label><input type="radio" name="f-autoriza" value="Sim" checked> Sim</label>
+            <label><input type="radio" name="f-autoriza" value="Não"> Não</label>
+          </div>
+        </div>
+        <div class="f-field">
+          <label>Coordenadas GPS</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="f-coords" placeholder="Toque no botão pra capturar" readonly style="flex:1;min-width:180px">
+            <button type="button" class="btn-loc" id="btn-capturar-gps">📍 Capturar localização</button>
+          </div>
+          <div id="gps-status" style="font-size:11.5px;color:var(--gray);margin-top:6px"></div>
+        </div>
+      </div>
+
+      <div id="detalhes-extras">
+        <div class="form-section">
+          <h4>Detalhes extras (preencha se tiver tempo)</h4>
+          <div class="f-grid">
+            <div class="f-field"><label>Data da visita</label><input type="date" id="f-data"></div>
+            <div class="f-field"><label>Horário da visita</label><input type="time" id="f-horario"></div>
+            <div class="f-field"><label>Indicado por</label><input type="text" id="f-indicado"></div>
+            <div class="f-field"><label>Nome da propriedade</label><input type="text" id="f-propriedade"></div>
+            <div class="f-field"><label>CPF ou CNPJ (se tiver)</label><input type="text" id="f-doc"></div>
+            <div class="f-field"><label>Área total (hectares)</label><input type="number" id="f-area" step="0.1"></div>
+            <div class="f-field">
+              <label>Sistema (se corte/misto)</label>
+              <select id="f-sistema">
+                <option value="">—</option>
+                <option value="Extensivo">Extensivo</option>
+                <option value="Semi-confinamento">Semi-confinamento</option>
+                <option value="Confinamento">Confinamento</option>
+              </select>
+            </div>
+            <div class="f-field"><label>Vacas em lactação</label><input type="number" id="f-vacas-lac"></div>
+            <div class="f-field"><label>Produção (litros/dia)</label><input type="number" id="f-litros-dia"></div>
+            <div class="f-field"><label>Marca/fornecedor atual</label><input type="text" id="f-marca"></div>
+            <div class="f-field"><label>Onde compra</label><input type="text" id="f-onde-compra"></div>
+            <div class="f-field"><label>Volume (ton/mês)</label><input type="number" id="f-volume" step="0.1"></div>
+            <div class="f-field">
+              <label>Forma de pagamento</label>
+              <select id="f-pagamento">
+                <option value="">—</option>
+                <option value="À vista">À vista</option>
+                <option value="Financiado">Financiado</option>
+                <option value="Descontado no leite">Descontado no leite</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="f-field">
+            <label>Satisfeito com o fornecedor atual?</label>
+            <div class="f-radio-group">
+              <label><input type="radio" name="f-satisfeito" value="Sim" checked> Sim</label>
+              <label><input type="radio" name="f-satisfeito" value="Mais ou menos"> Mais ou menos</label>
+              <label><input type="radio" name="f-satisfeito" value="Não"> Não</label>
+            </div>
+          </div>
+          <div class="f-field">
+            <label>Pretende expandir o rebanho?</label>
+            <div class="f-radio-group">
+              <label><input type="radio" name="f-expandir" value="Sim" checked> Sim</label>
+              <label><input type="radio" name="f-expandir" value="Não"> Não</label>
+              <label><input type="radio" name="f-expandir" value="Não sabe"> Não sabe</label>
+            </div>
+          </div>
+          <div class="f-field"><label>Observações</label><textarea id="f-obs"></textarea></div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-terra">Salvar visita</button>
+    </div>
+  </form>
+
+  <div class="card">
+    <h3 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span>Visitas registradas neste celular (<span id="contador-visitas">0</span>)</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-loc" id="btn-sincronizar">🔄 Sincronizar agora</button>
+        <button class="btn-download" id="btn-baixar-visitas">⬇ Baixar Excel</button>
+        <button class="btn-loc" id="btn-limpar-visitas" style="color:var(--vermelho);border-color:#E8B7A8">🗑 Limpar tudo</button>
+      </div>
+    </h3>
+    <div class="tbl-scroll"><table id="tbl-visitas"></table></div>
+  </div>
+</div></div>
+
+<footer>Ferramenta de campo — Leticia Vale da Rosa · Complemento do estudo "Potencial de Mercado de Ração para Bovinos" · Dados salvos localmente no dispositivo, exportáveis a qualquer momento.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ================= ARMAZENAMENTO SEGURO =================
+   Alguns navegadores bloqueiam localStorage quando o arquivo e aberto
+   direto do disco (file://). Este wrapper tenta localStorage; se falhar,
+   cai num armazenamento em memoria (funciona igual durante a sessao,
+   mas nao sobrevive a fechar o navegador - por isso o aviso abaixo). */
+let _storageOk = true;
+const _memStore = {};
+function storageGet(key, def){
+  try { const v = localStorage.getItem(key); return v===null ? def : v; }
+  catch(e){ _storageOk = false; return _memStore[key] !== undefined ? _memStore[key] : def; }
+}
+function storageSet(key, value){
+  try { localStorage.setItem(key, value); }
+  catch(e){ _storageOk = false; _memStore[key] = value; }
+}
+function avisoStorageSeVigente(){
+  if(!_storageOk){
+    const aviso = document.getElementById('aviso-storage');
+    if(aviso) aviso.style.display = 'block';
+  }
+}
+
+/* ================= ABAS ================= */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+    btn.classList.add('on');
+    $('tab-'+btn.dataset.tab).classList.add('on');
+    window.scrollTo({top:0,behavior:'instant'});
+  });
+});
+
+/* ================= CHECKLIST (persistido no localStorage) ================= */
+const CHECKLIST = {
+  antes: [
+    "Celular carregado e com GPS ligado"
+  ],
+  durante: [
+    "Perguntar antes de anotar qualquer dado",
+    "Perguntar: compra pronta ou mistura na fazenda?",
+    "Perguntar quem mais ele conhece que cria gado",
+    "Capturar coordenadas GPS antes de sair"
+  ],
+  depois: [
+    "Baixar/sincronizar antes de fechar o app"
+  ]
+};
+
+function renderChecklist(){
+  const salvo = JSON.parse(storageGet('checklist_estado','{}'));
+  ['antes','durante','depois'].forEach(bloco=>{
+    $('check-'+bloco).innerHTML = CHECKLIST[bloco].map((texto,i)=>{
+      const id = bloco+'-'+i;
+      const marcado = salvo[id] ? 'checked' : '';
+      return `<div class="check-item ${salvo[id]?'done':''}">
+        <input type="checkbox" id="${id}" ${marcado} onchange="toggleCheck('${id}', this.checked)">
+        <label for="${id}">${texto}</label></div>`;
+    }).join('');
+  });
+}
+function toggleCheck(id, valor){
+  const salvo = JSON.parse(storageGet('checklist_estado','{}'));
+  salvo[id] = valor;
+  storageSet('checklist_estado', JSON.stringify(salvo));
+  const item = $(id).closest('.check-item');
+  item.classList.toggle('done', valor);
+}
+$('btn-reset-checklist').addEventListener('click',()=>{
+  if(confirm('Reiniciar o checklist? Isso desmarca tudo (use no começo de um novo dia).')){
+    storageSet('checklist_estado','{}');
+    renderChecklist();
+  }
+});
+renderChecklist();
+
+/* ================= SUPABASE (sincronizacao automatica quando online) =================
+   Preencha SUPABASE_URL e SUPABASE_ANON_KEY com os dados do SEU projeto.
+   Instrucoes completas de configuracao (criar tabela + policy de seguranca)
+   no arquivo separado que a Claude te entregou junto com este (setup-supabase.md).
+   Enquanto estiver vazio, o app funciona 100% no modo local (so salva no
+   celular, sem tentar sincronizar - nada quebra). */
+const SUPABASE_URL = '';        // ex: 'https://xxxxxxxxxxxx.supabase.co'
+const SUPABASE_ANON_KEY = '';   // chave publica "anon" do projeto (nao e secreta, e feita pra ficar no front-end)
+
+async function enviarParaSupabase(visita){
+  if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return {ok:false, motivo:'nao_configurado'};
+  if(navigator.onLine === false) return {ok:false, motivo:'offline'};
+  try {
+    const resp = await fetch(SUPABASE_URL+'/rest/v1/visitas_campo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        coletor: visita.coletor, municipio: visita.municipio, indicado: visita.indicado||null,
+        coords: visita.coords||null, nome: visita.nome, propriedade: visita.propriedade||null,
+        telefone: visita.telefone||null, doc: visita.doc||null, autoriza: visita.autoriza,
+        area: visita.area||null, cabecas: visita.cabecas||null, tipo: visita.tipo,
+        sistema: visita.sistema||null, vacas_lac: visita.vacasLac||null, litros_dia: visita.litrosDia||null,
+        compra: visita.compra, marca: visita.marca||null, onde_compra: visita.ondeCompra||null,
+        volume: visita.volume||null, pagamento: visita.pagamento||null, satisfeito: visita.satisfeito||null,
+        expandir: visita.expandir||null, obs: visita.obs||null, data_visita: visita.data||null,
+        horario_visita: visita.horario||null, registrado_em: visita.registradoEm
+      })
+    });
+    return {ok: resp.ok, motivo: resp.ok ? '' : 'erro_http_'+resp.status};
+  } catch(e) {
+    return {ok:false, motivo:'erro_rede'};
+  }
+}
+
+async function sincronizarPendentes(mostrarAlerta){
+  if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
+    if(mostrarAlerta) alert('A sincronização automática ainda não foi configurada (ver setup-supabase.md). Use o botão "Baixar Excel" por enquanto.');
+    return;
+  }
+  const visitas = carregarVisitas();
+  const pendentes = visitas.filter(v=>!v.sincronizado);
+  if(pendentes.length===0){
+    if(mostrarAlerta) alert('Tudo já está sincronizado!');
+    return;
+  }
+  let sucesso = 0;
+  for(const v of visitas){
+    if(!v.sincronizado){
+      const r = await enviarParaSupabase(v);
+      if(r.ok){ v.sincronizado = true; sucesso++; }
+    }
+  }
+  salvarVisitas(visitas);
+  renderVisitas();
+  if(mostrarAlerta) alert(sucesso+' de '+pendentes.length+' visita(s) sincronizada(s) com sucesso.');
+}
+window.addEventListener('online', ()=>sincronizarPendentes(false));
+
+/* ================= GPS ================= */
+$('btn-capturar-gps').addEventListener('click',()=>{
+  $('gps-status').textContent = 'Capturando localização...';
+  if(!navigator.geolocation){
+    $('gps-status').textContent = 'Este navegador não suporta captura de GPS.';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const lat = pos.coords.latitude.toFixed(6);
+      const lon = pos.coords.longitude.toFixed(6);
+      $('f-coords').value = lat+', '+lon;
+      $('gps-status').textContent = 'Capturado com precisão de ~'+Math.round(pos.coords.accuracy)+'m.';
+    },
+    err=>{
+      $('gps-status').textContent = 'Não foi possível capturar (verifique se o GPS/localização está ligado no celular). Erro: '+err.message;
+    },
+    {enableHighAccuracy:true, timeout:15000}
+  );
+});
+
+/* ================= FORMULARIO DE COLETA ================= */
+function carregarVisitas(){
+  return JSON.parse(storageGet('visitas_coletadas','[]'));
+}
+function salvarVisitas(lista){
+  storageSet('visitas_coletadas', JSON.stringify(lista));
+}
+
+function renderVisitas(){
+  const visitas = carregarVisitas();
+  $('contador-visitas').textContent = visitas.length;
+  const cols = ['Sinc.','Data','Hora','Coletor','Município','Coordenadas','Produtor','Propriedade','Telefone','Cabeças','Tipo','Compra pronta?','Autoriza contato?'];
+  $('tbl-visitas').innerHTML = '<tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>'+
+    visitas.map(v=>`<tr>
+      <td><span class="badge ${v.sincronizado?'b-ok':'b-no'}">${v.sincronizado?'✔':'⏳'}</span></td>
+      <td>${v.data||''}</td><td>${v.horario||''}</td><td>${v.coletor||''}</td><td>${v.municipio||''}</td>
+      <td class="mono" style="font-size:10.5px">${v.coords||'—'}</td>
+      <td>${v.nome||''}</td><td>${v.propriedade||''}</td><td>${v.telefone||''}</td>
+      <td>${v.cabecas||''}</td><td>${v.tipo||''}</td>
+      <td>${v.compra||''}</td>
+      <td><span class="badge ${v.autoriza==='Sim'?'b-ok':'b-no'}">${v.autoriza||''}</span></td>
+      </tr>`).join('');
+}
+
+$('form-coleta').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const visita = {
+    coletor: $('f-coletor').value,
+    data: $('f-data').value,
+    horario: $('f-horario').value,
+    municipio: $('f-municipio').value,
+    indicado: $('f-indicado').value,
+    coords: $('f-coords').value,
+    nome: $('f-nome').value,
+    propriedade: $('f-propriedade').value,
+    telefone: $('f-telefone').value,
+    doc: $('f-doc').value,
+    autoriza: document.querySelector('input[name=f-autoriza]:checked').value,
+    area: $('f-area').value,
+    cabecas: $('f-cabecas').value,
+    tipo: $('f-tipo').value,
+    sistema: $('f-sistema').value,
+    vacasLac: $('f-vacas-lac').value,
+    litrosDia: $('f-litros-dia').value,
+    compra: document.querySelector('input[name=f-compra]:checked').value,
+    marca: $('f-marca').value,
+    ondeCompra: $('f-onde-compra').value,
+    volume: $('f-volume').value,
+    pagamento: $('f-pagamento').value,
+    satisfeito: document.querySelector('input[name=f-satisfeito]:checked').value,
+    expandir: document.querySelector('input[name=f-expandir]:checked').value,
+    obs: $('f-obs').value,
+    registradoEm: new Date().toISOString(),
+    sincronizado: false
+  };
+
+  // tenta enviar pro Supabase na hora; se nao der (offline ou nao configurado),
+  // fica marcado como pendente e sincroniza sozinho quando a internet voltar
+  const resultado = await enviarParaSupabase(visita);
+  visita.sincronizado = resultado.ok;
+
+  const visitas = carregarVisitas();
+  visitas.push(visita);
+  salvarVisitas(visitas);
+  renderVisitas();
+  $('form-coleta').reset();
+  $('f-data').value = new Date().toISOString().slice(0,10);
+  $('f-horario').value = new Date().toTimeString().slice(0,5);
+  $('gps-status').textContent = '';
+
+  if(resultado.ok){
+    alert('Visita salva e já sincronizada com a base!');
+  } else if(resultado.motivo==='nao_configurado'){
+    alert('Visita salva neste celular. (Sincronização automática ainda não configurada — use "Baixar Excel".)');
+  } else {
+    alert('Visita salva neste celular. Sem internet agora — vai sincronizar sozinha assim que conectar.');
+  }
+});
+
+$('btn-sincronizar').addEventListener('click', ()=>sincronizarPendentes(true));
+
+$('btn-limpar-visitas').addEventListener('click',()=>{
+  if(confirm('Tem certeza? Isso apaga TODAS as visitas salvas neste celular (só faça isso depois de já ter baixado o Excel).')){
+    storageSet('visitas_coletadas','[]');
+    renderVisitas();
+  }
+});
+
+$('btn-baixar-visitas').addEventListener('click',()=>{
+  const visitas = carregarVisitas();
+  if(visitas.length===0){ alert('Ainda não tem nenhuma visita registrada.'); return; }
+  const cabecalho = ['Data','Horário','Coletor','Município','Indicado por','Coordenadas GPS','Nome do responsável',
+    'Propriedade','Telefone','CPF/CNPJ','Autoriza contato','Área (ha)','Nº cabeças','Tipo','Sistema',
+    'Vacas em lactação','Produção L/dia','Compra pronta ou mistura','Marca/fornecedor','Onde compra',
+    'Volume ton/mês','Forma de pagamento','Satisfeito com fornecedor','Pretende expandir','Observações'];
+  const linhas = [cabecalho, ...visitas.map(v=>[
+    v.data,v.horario,v.coletor,v.municipio,v.indicado,v.coords,v.nome,v.propriedade,v.telefone,v.doc,v.autoriza,
+    v.area,v.cabecas,v.tipo,v.sistema,v.vacasLac,v.litrosDia,v.compra,v.marca,v.ondeCompra,v.volume,
+    v.pagamento,v.satisfeito,v.expandir,v.obs
+  ])];
+  const csv = linhas.map(linha=>linha.map(campo=>{
+    let txt = (campo===undefined||campo===null) ? '' : String(campo);
+    txt = txt.replace(/"/g,'""');
+    return `"${txt}"`;
+  }).join(';')).join('\r\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'visitas-coletadas-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+// preenche a data e o horario de agora por padrao
+$('f-data').value = new Date().toISOString().slice(0,10);
+$('f-horario').value = new Date().toTimeString().slice(0,5);
+
+renderVisitas();
+avisoStorageSeVigente();
+sincronizarPendentes(false);
+</script>
+</body>
+</html>
